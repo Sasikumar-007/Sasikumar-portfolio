@@ -19,7 +19,10 @@ load_dotenv()
 SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
 SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
 
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+def get_supabase():
+    if not SUPABASE_URL or not SUPABASE_KEY:
+        raise Exception("Supabase credentials missing. Please set SUPABASE_URL and SUPABASE_KEY in environment variables.")
+    return create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ── SMTP ──────────────────────────────────────────────────
 SMTP_EMAIL = os.getenv("SMTP_EMAIL", "")
@@ -62,6 +65,7 @@ async def handle_contact(data: ContactForm):
     """
     try:
         # ── 1. Store in Supabase (PostgreSQL) ─────────────
+        supabase = get_supabase()
         row = {
             "name": data.name,
             "email": data.email,
@@ -84,9 +88,13 @@ async def handle_contact(data: ContactForm):
         error_msg = str(e)
         print(f"[ERROR] /contact: {error_msg}")
         
-        # Friendly error for RLS/Permission issues
-        if "row-level security" in error_msg.lower():
-            friendly_detail = "Database Permission Error: Please ensure you have run the RLS policy SQL in your Supabase dashboard."
+        # Friendly error messages for common cloud issues
+        if "supabase credentials missing" in error_msg.lower():
+            friendly_detail = "API Configuration Error: SUPABASE_URL or SUPABASE_KEY is missing in your environment variables."
+        elif "row-level security" in error_msg.lower():
+            friendly_detail = "Database Permission Error: Please ensure you have disabled RLS or added a policy for the 'contacts' table."
+        elif "bad credentials" in error_msg.lower() or "password not accepted" in error_msg.lower():
+            friendly_detail = "Email Error: SMTP credentials (App Password) are incorrect."
         else:
             friendly_detail = error_msg
 

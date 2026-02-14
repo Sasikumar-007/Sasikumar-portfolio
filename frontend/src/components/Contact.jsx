@@ -27,7 +27,11 @@ export default function Contact() {
                 body: JSON.stringify(form),
             });
 
-            if (!res.ok) throw new Error('Failed to send message');
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.detail || 'Failed to send message');
+            }
 
             setStatus('success');
             setForm({ name: '', email: '', subject: '', message: '' });
