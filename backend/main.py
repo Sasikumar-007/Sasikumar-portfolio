@@ -16,8 +16,8 @@ from supabase import create_client, Client
 load_dotenv()
 
 # ── Supabase ──────────────────────────────────────────────
-SUPABASE_URL: str = os.getenv("SUPABASE_URL", "")
-SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "")
+SUPABASE_URL: str = os.getenv("SUPABASE_URL", "").strip()
+SUPABASE_KEY: str = os.getenv("SUPABASE_KEY", "").strip()
 
 def get_supabase():
     if not SUPABASE_URL or not SUPABASE_KEY:
@@ -25,9 +25,9 @@ def get_supabase():
     return create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # ── SMTP ──────────────────────────────────────────────────
-SMTP_EMAIL = os.getenv("SMTP_EMAIL", "")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
-RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL", "sasikumarblogger@gmail.com")
+SMTP_EMAIL = os.getenv("SMTP_EMAIL", "").strip()
+SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "").strip()
+RECIPIENT_EMAIL = os.getenv("RECIPIENT_EMAIL", "sasikumarblogger@gmail.com").strip()
 
 # ── FastAPI app ───────────────────────────────────────────
 app = FastAPI(title="Sasikumar Portfolio API", version="1.0.0")
