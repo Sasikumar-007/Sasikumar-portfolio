@@ -5,10 +5,16 @@
     "description": "Unified portfolio with React+Vite frontend and FastAPI backend",
     "scripts": {
         "install:all": "npm install --prefix frontend && pip install -r backend/requirements.txt",
-        "build": "npm run build --prefix frontend",
-        "vercel-build": "npm install --prefix frontend && npm run build --prefix frontend",
+        "build": "cd frontend && npm install && npm run build",
+        "vercel-build": "cd frontend && npm install && npm run build",
         "start": "python backend/main.py",
         "dev:frontend": "npm run dev --prefix frontend",
         "dev:backend": "python -m uvicorn backend.main:app --reload --port 8000"
+    },
+    "devDependencies": {
+        "vite": "^6.0.0",
+        "@vitejs/plugin-react": "^4.3.4",
+        "tailwindcss": "^4.0.0",
+        "@tailwindcss/vite": "^4.0.0"
     }
 }
